@@ -12,7 +12,7 @@ import type { X402DonationConfig } from "../types/donation-config";
 import { fetchGitHubConfig } from "../lib/githubConfig";
 import { isAddress, type Address } from "viem";
 import { X402_CONFIG_FILE, X402_CONFIG_PATH } from "../constants/config";
-import { Network, NETWORKS } from "../config/networks";
+import { NETWORKS, getAvailableNetworks } from "../config/networks";
 import { normalizeNetworkConfig } from "../lib/networkUtils";
 
 interface BuilderPanelGitHubProps {
@@ -662,7 +662,7 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
               errors.
             </p>
             <div className="space-y-2 border border-input rounded-md p-3 bg-background">
-              {(Object.keys(NETWORKS) as Network[]).map((networkKey) => {
+              {getAvailableNetworks().map((networkKey) => {
                 const networkConfig = NETWORKS[networkKey];
                 const isChecked = networks.includes(networkKey);
                 return (

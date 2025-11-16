@@ -11,7 +11,7 @@ import { BuilderOutputTabs } from "./BuilderOutputTabs";
 import type { X402DonationConfig } from "../types/donation-config";
 import { encodeConfigToHash, decodeConfigFromHash } from "../lib/quicklinkConfig";
 import { isAddress, type Address } from "viem";
-import { Network, NETWORKS } from "../config/networks";
+import { NETWORKS, getAvailableNetworks } from "../config/networks";
 import { normalizeNetworkConfig } from "../lib/networkUtils";
 
 interface BuilderPanelQuickLinkProps {
@@ -406,7 +406,7 @@ export function BuilderPanelQuickLink({ address, onPreview }: BuilderPanelQuickL
           contract addresses, it's recommended to specify networks to prevent cross-network errors.
         </p>
         <div className="space-y-2 border border-input rounded-md p-3 bg-background">
-          {(Object.keys(NETWORKS) as Network[]).map((networkKey) => {
+          {getAvailableNetworks().map((networkKey) => {
             const networkConfig = NETWORKS[networkKey];
             const isChecked = networks.includes(networkKey);
             return (
