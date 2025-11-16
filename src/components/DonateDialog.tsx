@@ -3,7 +3,7 @@
  * Complete donation flow: network selection → wallet connection → fee display → payment confirmation
  */
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { useAccount, useConnectorClient } from "wagmi";
 import { useAppKit } from "@reown/appkit/react";
 import type { FeeCalculationResult } from "@x402x/client";
@@ -115,9 +115,10 @@ export function DonateDialog({
   }, [isOpen]);
 
   // Get selectable networks based on config
-  const selectableNetworks = config
-    ? getSelectableNetworks(config)
-    : (Object.keys(NETWORKS) as Network[]);
+  const selectableNetworks = useMemo(
+    () => (config ? getSelectableNetworks(config) : (Object.keys(NETWORKS) as Network[])),
+    [config],
+  );
   const hasNetworkRestriction = config?.network !== undefined && config.network !== null;
   const canChangeNetwork = selectableNetworks.length > 1;
 

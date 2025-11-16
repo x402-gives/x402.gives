@@ -59,21 +59,26 @@ export function validateNetworkConfig(config: X402DonationConfig): {
     return { valid: true, errors: [] };
   }
 
-  // Check if all configured networks exist
-  const availableNetworks = getAvailableNetworks();
+  // First, check if all configured networks are valid network names (check against all networks, not just available ones)
+  const allNetworkNames = Object.keys(NETWORKS) as Network[];
   const invalidNetworks = configuredNetworks.filter(
-    (network) => !availableNetworks.includes(network as Network),
+    (network) => !allNetworkNames.includes(network as Network),
   );
 
   if (invalidNetworks.length > 0) {
     errors.push(
-      `Invalid networks: ${invalidNetworks.join(", ")}. Available networks: ${availableNetworks.join(", ")}`,
+      `Invalid network names: ${invalidNetworks.join(", ")}. Valid networks: ${allNetworkNames.join(", ")}`,
     );
   }
 
-  // Check if any configured networks are testnets in production
-  if (import.meta.env.PROD) {
-    const testnetNetworks = configuredNetworks.filter((network) => {
+  // Then, check if any configured networks are testnets in production
+  // Only check valid networks to avoid duplicate error messages
+  const validConfiguredNetworks = configuredNetworks.filter((network) =>
+    allNetworkNames.includes(network as Network),
+  );
+
+  if (import.meta.env.PROD && validConfiguredNetworks.length > 0) {
+    const testnetNetworks = validConfiguredNetworks.filter((network) => {
       const networkConfig = NETWORKS[network as Network];
       return networkConfig && networkConfig.type === "testnet";
     });
