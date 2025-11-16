@@ -9,6 +9,11 @@ export type SeoConfig = {
     type: "website" | "article";
     locale?: string;
   };
+  twitter: {
+    card: string;
+    site?: string;
+    creator?: string;
+  };
 };
 
 export const seoConfig: SeoConfig = {
@@ -19,6 +24,9 @@ export const seoConfig: SeoConfig = {
   openGraph: {
     type: "website",
     locale: "en_US",
+  },
+  twitter: {
+    card: "summary",
   },
 };
 

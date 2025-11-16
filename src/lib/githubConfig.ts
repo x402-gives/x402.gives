@@ -1,6 +1,6 @@
 import type { Address } from "viem";
 import type { X402DonationConfig } from "../types/donation-config";
-import { X402_CONFIG_DIR, X402_CONFIG_PATH } from "../constants/config";
+import { X402_CONFIG_PATH } from "../constants/config";
 
 export interface GitHubUserInfo {
   login: string;

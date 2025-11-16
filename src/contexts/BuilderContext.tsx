@@ -35,7 +35,7 @@ export function BuilderProvider({
   const contextValue: BuilderContextValue = {
     config: initialConfig,
     recipients: initialRecipients,
-    updateConfig: (config: X402Config) => {
+    updateConfig: (config: X402DonationConfig) => {
       onConfigChange?.(config);
     },
     updateRecipients: (_recipients: Recipient[]) => {

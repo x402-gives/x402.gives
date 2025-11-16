@@ -1,15 +1,5 @@
 import ThemeSwitch from "@/components/theme-switch";
-import {
-  FaDiscord,
-  FaGithub,
-  FaGlobe,
-  FaInstagram,
-  FaLinkedin,
-  FaMedium,
-  FaTelegram,
-  FaXTwitter,
-  FaYoutube,
-} from "react-icons/fa6";
+import { FaGithub, FaGlobe } from "react-icons/fa6";
 
 // Define a constant array for social links
 const SOCIAL_LINKS = [
