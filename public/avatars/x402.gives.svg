@@ -1,0 +1,56 @@
+<svg width="256" height="256" viewBox="0 0 256 256" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .avatar-bg {
+      fill: #FFFFFF;
+    }
+    .avatar-border {
+      stroke: #E5E7EB;
+      stroke-width: 2;
+      fill: none;
+    }
+    .icon-bg {
+      fill: #F1F5F9;
+    }
+    .icon-heart {
+      fill: #10B981;
+    }
+    .icon-x {
+      stroke: #ECFDF5;
+      stroke-width: 1.0;
+      stroke-linecap: round;
+    }
+    .wordmark {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font-size: 34px;
+      font-weight: 700;
+      fill: #111827;
+    }
+  </style>
+
+  <!-- outer square (GitHub avatar is square, often shown as circle,保持简单浅色) -->
+  <rect x="0" y="0" width="256" height="256" class="avatar-bg" />
+  <rect x="1" y="1" width="254" height="254" rx="40" class="avatar-border" />
+
+  <!-- top: maximized logo icon, very filled -->
+  <g transform="translate(34 6) scale(4.6)">
+    <rect x="4" y="4" width="32" height="32" rx="8" class="icon-bg" />
+    <path
+      class="icon-heart"
+      d="M20 29
+         C17 26, 12 23, 12 18
+         C12 15, 14 13, 16.5 13
+         C18 13, 19.2 13.8, 20 15
+         C20.8 13.8, 22 13, 23.5 13
+         C26 13, 28 15, 28 18
+         C28 23, 23 26, 20 29
+         Z"
+    />
+    <path class="icon-x" d="M17.4 18.4 L22.6 23.6" />
+    <path class="icon-x" d="M22.6 18.4 L17.4 23.6" />
+  </g>
+
+  <!-- bottom: brand text, centered -->
+  <text class="wordmark" x="128" y="212" text-anchor="middle">x402.gives</text>
+</svg>
+
+
