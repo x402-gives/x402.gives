@@ -2,7 +2,7 @@
   "payTo": "0xd7929f1de244f64353af59ff15cfef275d643dc3",
   "defaultAmount": "0.1",
   "title": "x402.gives",
-  "description": "Zero-backend donation hub for verifiable GitHub repos and wallet QuickLinks, powered by the x402&x402x",
+  "description": "Zero-backend donation hub for verifiable GitHub repos and wallet QuickLinks, powered by the x402&x402x.\n\nRoutes all received assets to projects that maintain a verified x402.gives badge.",
   "creator": {
     "handle": "x402-gives",
     "avatar": "https://avatars.githubusercontent.com/u/244274205?v=4"
