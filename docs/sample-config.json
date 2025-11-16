@@ -1,0 +1,38 @@
+{
+  "payTo": "0x1234567890123456789012345678901234567890",
+  "title": "Support React Development",
+  "description": "Help us build the future of web development with React",
+  "creator": {
+    "handle": "facebook",
+    "avatar": "https://avatars.githubusercontent.com/u/69631?v=4"
+  },
+  "recipients": [
+    {
+      "address": "0x1234567890123456789012345678901234567890",
+      "bips": 7000
+    },
+    {
+      "address": "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd",
+      "bips": 3000
+    }
+  ],
+  "defaultAmount": "20",
+  "network": "base-mainnet",
+  "links": [
+    {
+      "url": "https://react.dev",
+      "label": "Documentation"
+    },
+    {
+      "url": "https://react.dev/learn"
+    },
+    {
+      "url": "https://discord.gg/react",
+      "label": "Community"
+    },
+    {
+      "url": "https://github.com/facebook/react",
+      "label": "Repository"
+    }
+  ]
+}
