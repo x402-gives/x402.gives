@@ -3,6 +3,7 @@
 [![License](https://img.shields.io/badge/license-MIT-blue.svg)](LICENSE)
 [![Powered by x402](https://img.shields.io/badge/powered%20by-x402-blue)](https://x402.org)
 [![Built on x402x](https://img.shields.io/badge/built%20with-x402x.dev-purple)](https://x402x.dev)
+[![Support x402.gives](https://img.shields.io/badge/donate-x402.gives-blue?logo=githubsponsors&logoColor=white)](https://x402.gives/github.com/x402-gives/x402.gives)
 
 `x402.gives` is a zero-backend donation app powered by the x402 protocol and the x402x settlement framework. Maintainers host it as a static site (recommended repo: [`x402-gives/x402.gives`](https://github.com/x402-gives/x402.gives)), while creators use it to publish verifiable GitHub donation pages or quick wallet links under the canonical domain [`https://x402.gives`](https://x402.gives).
 
