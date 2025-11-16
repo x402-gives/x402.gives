@@ -15,8 +15,10 @@ import {
   formatDefaultAssetAmount,
   encodeRecipientsForHook,
 } from "../lib/x402";
+import { getSelectableNetworks } from "../lib/networkUtils";
 import type { Recipient } from "../hooks/useRecipient";
 import type { Address } from "viem";
+import type { X402DonationConfig } from "../types/donation-config";
 
 type PaymentStep =
   | "select-network"
@@ -32,6 +34,7 @@ interface DonateDialogProps {
   amount: string;
   recipients: Recipient[];
   payTo?: Address;
+  config?: X402DonationConfig;
   onSuccess?: (result: { txHash: string; network: Network; facilitatorFee?: string }) => void;
   onError?: (error: string) => void;
 }
@@ -42,6 +45,7 @@ export function DonateDialog({
   amount,
   recipients,
   payTo,
+  config,
   onSuccess,
   onError,
 }: DonateDialogProps) {
@@ -54,6 +58,7 @@ export function DonateDialog({
   const [displayFee, setDisplayFee] = useState<string>("");
   const [displayTotal, setDisplayTotal] = useState<string>("");
   const [txHash, setTxHash] = useState<string | null>(null);
+  const [isManualNetworkSelection, setIsManualNetworkSelection] = useState(false);
 
   const { address, isConnected, chain } = useAccount();
   const { data: connectorClient } = useConnectorClient();
@@ -105,18 +110,37 @@ export function DonateDialog({
       setIsPaying(false);
       setTxHash(null);
       setStep("select-network");
+      setIsManualNetworkSelection(false);
     }
   }, [isOpen]);
 
-  // Load preferred network on open
+  // Get selectable networks based on config
+  const selectableNetworks = config
+    ? getSelectableNetworks(config)
+    : (Object.keys(NETWORKS) as Network[]);
+  const hasNetworkRestriction = config?.network !== undefined && config.network !== null;
+  const canChangeNetwork = selectableNetworks.length > 1;
+
+  // Load preferred network or auto-select if only one network available
   useEffect(() => {
-    if (isOpen) {
+    if (!isOpen) return;
+
+    if (selectableNetworks.length === 1) {
+      // Auto-select if only one network is available
+      setSelectedNetwork(selectableNetworks[0]);
+      setPreferredNetwork(selectableNetworks[0]);
+      setIsManualNetworkSelection(false);
+      return;
+    }
+
+    if (!isManualNetworkSelection) {
       const preferred = getPreferredNetwork();
-      if (preferred) {
+      // Only use preferred if it's in the selectable networks
+      if (preferred && selectableNetworks.includes(preferred)) {
         setSelectedNetwork(preferred);
       }
     }
-  }, [isOpen]);
+  }, [isOpen, selectableNetworks, isManualNetworkSelection]);
 
   // Auto-continue flow after wallet connection
   useEffect(() => {
@@ -152,6 +176,7 @@ export function DonateDialog({
     setSelectedNetwork(network);
     setPreferredNetwork(network);
     setError(null);
+    setIsManualNetworkSelection(false);
 
     if (!isConnected) {
       // Open AppKit modal to connect wallet
@@ -324,6 +349,40 @@ export function DonateDialog({
                   : `Choose a network to get started (wallet connection will be requested next)`}
               </p>
 
+              {hasNetworkRestriction && (
+                <div
+                  style={{
+                    marginBottom: "20px",
+                    padding: "12px 15px",
+                    backgroundColor: "#fef3c7",
+                    borderRadius: "8px",
+                    border: "1px solid #fcd34d",
+                    fontSize: "13px",
+                    color: "#92400e",
+                  }}
+                >
+                  ℹ️ This recipient only accepts donations on:{" "}
+                  {selectableNetworks.map((n) => NETWORKS[n].displayName).join(", ")}
+                </div>
+              )}
+
+              {selectableNetworks.length === 0 && (
+                <div
+                  style={{
+                    marginBottom: "20px",
+                    padding: "15px",
+                    backgroundColor: "#fee",
+                    borderRadius: "8px",
+                    border: "1px solid #fcc",
+                  }}
+                >
+                  <div style={{ fontSize: "14px", color: "#c00" }}>
+                    ❌ No available networks. The configured networks are not available in this
+                    environment.
+                  </div>
+                </div>
+              )}
+
               {error && (
                 <div
                   style={{
@@ -338,51 +397,88 @@ export function DonateDialog({
                 </div>
               )}
 
-              <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
-                {Object.entries(NETWORKS).map(([key, networkConfig]) => (
-                  <button
-                    key={key}
-                    onClick={() => handleNetworkSelect(key as Network)}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "15px",
-                      padding: "18px 20px",
-                      border: selectedNetwork === key ? "2px solid #3b82f6" : "2px solid #e5e7eb",
-                      borderRadius: "10px",
-                      backgroundColor: selectedNetwork === key ? "#f0f9ff" : "white",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                      textAlign: "left",
-                      fontSize: "16px",
-                      fontWeight: "500",
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = "#3b82f6";
-                      e.currentTarget.style.backgroundColor = "#f0f9ff";
-                      e.currentTarget.style.transform = "translateY(-2px)";
-                      e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.15)";
-                    }}
-                    onMouseLeave={(e) => {
-                      if (selectedNetwork !== key) {
-                        e.currentTarget.style.borderColor = "#e5e7eb";
-                        e.currentTarget.style.backgroundColor = "white";
-                      }
-                      e.currentTarget.style.transform = "translateY(0)";
-                      e.currentTarget.style.boxShadow = "none";
-                    }}
-                  >
-                    <span style={{ fontSize: "32px" }}>{networkConfig.icon}</span>
-                    <div style={{ flex: 1 }}>
-                      <div style={{ fontWeight: "600", color: "#111", marginBottom: "2px" }}>
-                        {networkConfig.displayName}
-                      </div>
-                      <div style={{ fontSize: "13px", color: "#6b7280" }}>{networkConfig.name}</div>
+              {selectableNetworks.length === 1 && selectedNetwork ? (
+                // Single network: show as read-only
+                <div
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "15px",
+                    padding: "18px 20px",
+                    border: "2px solid #3b82f6",
+                    borderRadius: "10px",
+                    backgroundColor: "#f0f9ff",
+                    textAlign: "left",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                  }}
+                >
+                  <span style={{ fontSize: "32px" }}>{NETWORKS[selectedNetwork].icon}</span>
+                  <div style={{ flex: 1 }}>
+                    <div style={{ fontWeight: "600", color: "#111", marginBottom: "2px" }}>
+                      {NETWORKS[selectedNetwork].displayName}
                     </div>
-                    <span style={{ color: "#3b82f6", fontSize: "20px" }}>→</span>
-                  </button>
-                ))}
-              </div>
+                    <div style={{ fontSize: "13px", color: "#6b7280" }}>
+                      {NETWORKS[selectedNetwork].name}
+                    </div>
+                  </div>
+                  <span style={{ color: "#3b82f6", fontSize: "20px" }}>✓</span>
+                </div>
+              ) : (
+                <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
+                  {selectableNetworks.map((networkKey) => {
+                    const networkConfig = NETWORKS[networkKey];
+                    return (
+                      <button
+                        key={networkKey}
+                        onClick={() => handleNetworkSelect(networkKey)}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "15px",
+                          padding: "18px 20px",
+                          border:
+                            selectedNetwork === networkKey
+                              ? "2px solid #3b82f6"
+                              : "2px solid #e5e7eb",
+                          borderRadius: "10px",
+                          backgroundColor: selectedNetwork === networkKey ? "#f0f9ff" : "white",
+                          cursor: "pointer",
+                          transition: "all 0.2s",
+                          textAlign: "left",
+                          fontSize: "16px",
+                          fontWeight: "500",
+                        }}
+                        onMouseEnter={(e) => {
+                          e.currentTarget.style.borderColor = "#3b82f6";
+                          e.currentTarget.style.backgroundColor = "#f0f9ff";
+                          e.currentTarget.style.transform = "translateY(-2px)";
+                          e.currentTarget.style.boxShadow = "0 4px 12px rgba(59, 130, 246, 0.15)";
+                        }}
+                        onMouseLeave={(e) => {
+                          if (selectedNetwork !== networkKey) {
+                            e.currentTarget.style.borderColor = "#e5e7eb";
+                            e.currentTarget.style.backgroundColor = "white";
+                          }
+                          e.currentTarget.style.transform = "translateY(0)";
+                          e.currentTarget.style.boxShadow = "none";
+                        }}
+                      >
+                        <span style={{ fontSize: "32px" }}>{networkConfig.icon}</span>
+                        <div style={{ flex: 1 }}>
+                          <div style={{ fontWeight: "600", color: "#111", marginBottom: "2px" }}>
+                            {networkConfig.displayName}
+                          </div>
+                          <div style={{ fontSize: "13px", color: "#6b7280" }}>
+                            {networkConfig.name}
+                          </div>
+                        </div>
+                        <span style={{ color: "#3b82f6", fontSize: "20px" }}>→</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
             </>
           )}
 
@@ -480,27 +576,30 @@ export function DonateDialog({
                       {NETWORKS[selectedNetwork].name}
                     </div>
                   </div>
-                  <button
-                    onClick={() => {
-                      setSelectedNetwork(null);
-                      setFeeInfo(null);
-                      setError(null);
-                      setStep("select-network");
-                    }}
-                    disabled={isPaying}
-                    style={{
-                      marginLeft: "auto",
-                      padding: "6px 12px",
-                      fontSize: "13px",
-                      border: "1px solid #d1d5db",
-                      borderRadius: "6px",
-                      backgroundColor: "white",
-                      cursor: isPaying ? "not-allowed" : "pointer",
-                      opacity: isPaying ? 0.5 : 1,
-                    }}
-                  >
-                    Change
-                  </button>
+                  {canChangeNetwork && (
+                    <button
+                      onClick={() => {
+                        setSelectedNetwork(null);
+                        setFeeInfo(null);
+                        setError(null);
+                        setIsManualNetworkSelection(true);
+                        setStep("select-network");
+                      }}
+                      disabled={isPaying}
+                      style={{
+                        marginLeft: "auto",
+                        padding: "6px 12px",
+                        fontSize: "13px",
+                        border: "1px solid #d1d5db",
+                        borderRadius: "6px",
+                        backgroundColor: "white",
+                        cursor: isPaying ? "not-allowed" : "pointer",
+                        opacity: isPaying ? 0.5 : 1,
+                      }}
+                    >
+                      Change
+                    </button>
+                  )}
                 </div>
                 {address && (
                   <div style={{ fontSize: "13px", color: "#6b7280", fontFamily: "monospace" }}>

@@ -28,7 +28,8 @@ const DEMO_OWNER = "x402-gives";
 const DEMO_REPO = "x402.gives";
 const DEMO_PAGE_URL = `https://x402.gives/github.com/${DEMO_OWNER}/${DEMO_REPO}`;
 const DEMO_CONFIG_URL = `https://github.com/${DEMO_OWNER}/${DEMO_REPO}/blob/main/.x402/donation.json`;
-const BADGE_IMAGE_URL = "https://img.shields.io/badge/donate-x402.gives-blue?logo=githubsponsors&logoColor=white";
+const BADGE_IMAGE_URL =
+  "https://img.shields.io/badge/donate-x402.gives-blue?logo=githubsponsors&logoColor=white";
 
 export function Welcome() {
   const navigate = useNavigate();
@@ -314,7 +315,10 @@ export function Welcome() {
                 </div>
               </div>
 
-              <div id="demo" className="mt-8 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border border-blue-100 dark:border-blue-900/50">
+              <div
+                id="demo"
+                className="mt-8 p-5 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 rounded-xl border border-blue-100 dark:border-blue-900/50"
+              >
                 <div className="mb-4">
                   <div className="flex items-center gap-2 mb-2">
                     <div className="text-2xl">🎯</div>
@@ -350,92 +354,94 @@ export function Welcome() {
             </CardContent>
           </Card>
 
-        {/* Call to Action */}
-        <div className="text-center">
-          <Card className="border-none shadow-xl bg-white/85 dark:bg-gray-900/70 backdrop-blur">
-            <CardContent className="p-10 space-y-8">
-              <div className="space-y-3">
-                <Badge variant="secondary" className="px-4 py-1 text-sm">
-                  <Sparkles className="h-3 w-3 mr-1 inline" />
-                  Learn More
-                </Badge>
-                <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  Deep dive into x402.gives
-                </h2>
-                <p className="text-muted-foreground text-lg">
-                  Read the docs, explore the codebase, and learn about the protocols that power this
-                  experience.
-                </p>
-              </div>
+          {/* Call to Action */}
+          <div className="text-center">
+            <Card className="border-none shadow-xl bg-white/85 dark:bg-gray-900/70 backdrop-blur">
+              <CardContent className="p-10 space-y-8">
+                <div className="space-y-3">
+                  <Badge variant="secondary" className="px-4 py-1 text-sm">
+                    <Sparkles className="h-3 w-3 mr-1 inline" />
+                    Learn More
+                  </Badge>
+                  <h2 className="text-3xl font-bold text-gray-900 dark:text-white">
+                    Deep dive into x402.gives
+                  </h2>
+                  <p className="text-muted-foreground text-lg">
+                    Read the docs, explore the codebase, and learn about the protocols that power
+                    this experience.
+                  </p>
+                </div>
 
-              <div className="grid gap-3 sm:grid-cols-2">
-                <Button
-                  size="lg"
-                  className="w-full flex items-center justify-center gap-2"
-                  onClick={() => navigate("/docs")}
-                >
-                  <FileText className="h-4 w-4" />
-                  View Full Documentation
-                </Button>
-                <Button
-                  size="lg"
-                  variant="outline"
-                  className="w-full flex items-center justify-center gap-2"
-                  onClick={() => window.open("https://github.com/x402-gives/x402.gives", "_blank")}
-                >
-                  <Github className="h-4 w-4" />
-                  GitHub Project
-                </Button>
-              </div>
+                <div className="grid gap-3 sm:grid-cols-2">
+                  <Button
+                    size="lg"
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={() => navigate("/docs")}
+                  >
+                    <FileText className="h-4 w-4" />
+                    View Full Documentation
+                  </Button>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="w-full flex items-center justify-center gap-2"
+                    onClick={() =>
+                      window.open("https://github.com/x402-gives/x402.gives", "_blank")
+                    }
+                  >
+                    <Github className="h-4 w-4" />
+                    GitHub Project
+                  </Button>
+                </div>
 
-              <div className="pt-4 border-t border-border/40">
-                <div className="grid gap-6 md:grid-cols-2 text-left">
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-semibold text-sm">
-                        x402
+                <div className="pt-4 border-t border-border/40">
+                  <div className="grid gap-6 md:grid-cols-2 text-left">
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-10 w-10 rounded-full bg-blue-100 dark:bg-blue-900/40 flex items-center justify-center text-blue-600 dark:text-blue-400 font-semibold text-sm">
+                          x402
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          x402 Protocol
+                        </h3>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        x402 Protocol
-                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Transfer-with-authorization standard built for trust-minimized payments.
+                      </p>
+                      <Button
+                        variant="link"
+                        className="px-0 h-auto text-blue-600 hover:text-blue-700 dark:text-blue-400"
+                        onClick={() => window.open("https://x402.org", "_blank")}
+                      >
+                        Learn more <ExternalLink className="ml-1 h-3 w-3 inline" />
+                      </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Transfer-with-authorization standard built for trust-minimized payments.
-                    </p>
-                    <Button
-                      variant="link"
-                      className="px-0 h-auto text-blue-600 hover:text-blue-700 dark:text-blue-400"
-                      onClick={() => window.open("https://x402.org", "_blank")}
-                    >
-                      Learn more <ExternalLink className="ml-1 h-3 w-3 inline" />
-                    </Button>
-                  </div>
 
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2">
-                      <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold text-sm">
-                        x402x
+                    <div className="space-y-3">
+                      <div className="flex items-center gap-2">
+                        <div className="h-10 w-10 rounded-full bg-indigo-100 dark:bg-indigo-900/40 flex items-center justify-center text-indigo-600 dark:text-indigo-400 font-semibold text-sm">
+                          x402x
+                        </div>
+                        <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
+                          x402x Settlement
+                        </h3>
                       </div>
-                      <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                        x402x Settlement
-                      </h3>
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        Facilitator, hooks, and settlement router that power programmable donations.
+                      </p>
+                      <Button
+                        variant="link"
+                        className="px-0 h-auto text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
+                        onClick={() => window.open("https://x402x.dev", "_blank")}
+                      >
+                        Learn more <ExternalLink className="ml-1 h-3 w-3 inline" />
+                      </Button>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      Facilitator, hooks, and settlement router that power programmable donations.
-                    </p>
-                    <Button
-                      variant="link"
-                      className="px-0 h-auto text-indigo-600 hover:text-indigo-700 dark:text-indigo-400"
-                      onClick={() => window.open("https://x402x.dev", "_blank")}
-                    >
-                      Learn more <ExternalLink className="ml-1 h-3 w-3 inline" />
-                    </Button>
                   </div>
                 </div>
-              </div>
-            </CardContent>
-          </Card>
-        </div>
+              </CardContent>
+            </Card>
+          </div>
         </div>
       </div>
       <AppFooter />

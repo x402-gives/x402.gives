@@ -57,7 +57,19 @@ export interface X402DonationConfig {
 
   // ============ Configuration Options ============
   defaultAmount?: string;
-  network?: string;
+
+  /**
+   * Supported networks for this recipient (optional)
+   * - If specified: Only allow donations on the listed network(s)
+   *   Use this for contract addresses that differ across networks
+   * - If omitted: Allow all supported networks (suitable for EOA addresses)
+   *
+   * Examples:
+   * - Single network: "base" or ["base"]
+   * - Multiple networks: ["base", "base-sepolia"]
+   * - All networks: undefined or null
+   */
+  network?: string | string[];
 
   /**
    * Related links
@@ -141,7 +153,7 @@ export interface DisplayData {
     label?: string;
   }>;
   defaultAmount?: string;
-  network?: string;
+  network?: string | string[];
 
   // Source information
   source: RecipientPageData["metadata"]["source"];

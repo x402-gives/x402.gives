@@ -237,6 +237,7 @@ export function Give() {
           amount={selectedAmount}
           recipients={effectivePageData.config.recipients || []}
           payTo={effectivePageData.config.payTo}
+          config={effectivePageData.config}
           onSuccess={handleDonateSuccess}
           onError={handleDonateError}
         />

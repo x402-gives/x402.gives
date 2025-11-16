@@ -98,9 +98,9 @@ export function Docs() {
                 </div>
                 <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
                   User-level links (route <code>/github.com/&lt;username&gt;</code>) read the config
-                  from your GitHub profile repository{" "}
-                  <code>{`<username>/<username>`}</code>. Create that repository (GitHub already uses
-                  it for your profile README) and add <code>{X402_CONFIG_PATH}</code> at the root.
+                  from your GitHub profile repository <code>{`<username>/<username>`}</code>. Create
+                  that repository (GitHub already uses it for your profile README) and add{" "}
+                  <code>{X402_CONFIG_PATH}</code> at the root.
                 </p>
 
                 <div className="space-y-4">

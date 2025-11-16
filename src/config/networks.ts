@@ -126,3 +126,23 @@ export function getPreferredNetwork(): Network | null {
 export function setPreferredNetwork(network: Network): void {
   localStorage.setItem(PREFERRED_NETWORK_KEY, network);
 }
+
+/**
+ * Get available networks based on environment
+ * - Development: returns all networks (including testnets)
+ * - Production: returns only mainnet networks
+ */
+export function getAvailableNetworks(): Network[] {
+  const allNetworks = Object.keys(NETWORKS) as Network[];
+
+  // In production, filter out testnets
+  if (import.meta.env.PROD) {
+    return allNetworks.filter((network) => {
+      const config = NETWORKS[network];
+      return config.type === "mainnet";
+    });
+  }
+
+  // In development, return all networks
+  return allNetworks;
+}

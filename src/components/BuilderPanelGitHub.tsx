@@ -12,6 +12,8 @@ import type { X402DonationConfig } from "../types/donation-config";
 import { fetchGitHubConfig } from "../lib/githubConfig";
 import { isAddress, type Address } from "viem";
 import { X402_CONFIG_FILE, X402_CONFIG_PATH } from "../constants/config";
+import { Network, NETWORKS } from "../config/networks";
+import { normalizeNetworkConfig } from "../lib/networkUtils";
 
 interface BuilderPanelGitHubProps {
   username: string;
@@ -33,7 +35,7 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
   const [creatorAvatar, setCreatorAvatar] = useState("");
   const [links, setLinks] = useState<Array<{ url: string; label: string }>>([]);
   const [defaultAmount, setDefaultAmount] = useState("");
-  const [network, setNetwork] = useState("base-sepolia");
+  const [networks, setNetworks] = useState<string[]>([]);
   const [copied, setCopied] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [configExists, setConfigExists] = useState(false);
@@ -47,9 +49,9 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
     async function loadExistingConfig() {
       setIsLoading(true);
       try {
-        const repoInfoPromise = fetch(`https://api.github.com/repos/${username}/${targetRepo}`).catch(
-          () => null,
-        );
+        const repoInfoPromise = fetch(
+          `https://api.github.com/repos/${username}/${targetRepo}`,
+        ).catch(() => null);
 
         // Fetch both config and GitHub repo info in parallel
         const [configResult, repoResponse] = await Promise.all([
@@ -96,7 +98,8 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
             setDefaultAmount(configResult.config.defaultAmount);
           }
           if (configResult.config.network) {
-            setNetwork(configResult.config.network);
+            const normalized = normalizeNetworkConfig(configResult.config.network);
+            setNetworks(normalized);
           }
         } else {
           setConfigExists(false);
@@ -192,7 +195,8 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
           setDefaultAmount(configResult.config.defaultAmount);
         }
         if (configResult.config.network) {
-          setNetwork(configResult.config.network);
+          const normalized = normalizeNetworkConfig(configResult.config.network);
+          setNetworks(normalized);
         }
       } else {
         setConfigExists(false);
@@ -246,7 +250,7 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
     const config: X402DonationConfig = {
       payTo: payTo ? (payTo as Address) : undefined,
       defaultAmount: defaultAmount || undefined,
-      network,
+      network: networks.length > 0 ? (networks.length === 1 ? networks[0] : networks) : undefined,
     };
 
     // Add title and description
@@ -651,18 +655,43 @@ export function BuilderPanelGitHub({ username, repo, onPreview }: BuilderPanelGi
 
           {/* Network */}
           <div className="space-y-2">
-            <Label htmlFor="network">Network</Label>
-            <select
-              id="network"
-              value={network}
-              onChange={(e) => setNetwork(e.target.value)}
-              className="w-full px-3 py-2 border border-input rounded-md bg-background"
-            >
-              <option value="base-sepolia">Base Sepolia (Testnet)</option>
-              <option value="base-mainnet">Base Mainnet</option>
-              <option value="x-layer-mainnet">X Layer Mainnet</option>
-              <option value="x-layer-testnet">X Layer Testnet</option>
-            </select>
+            <Label htmlFor="network">Supported Networks (Optional)</Label>
+            <p className="text-xs text-muted-foreground mb-2">
+              Select networks where donations are accepted. Leave empty to allow all networks. For
+              contract addresses, it's recommended to specify networks to prevent cross-network
+              errors.
+            </p>
+            <div className="space-y-2 border border-input rounded-md p-3 bg-background">
+              {(Object.keys(NETWORKS) as Network[]).map((networkKey) => {
+                const networkConfig = NETWORKS[networkKey];
+                const isChecked = networks.includes(networkKey);
+                return (
+                  <label
+                    key={networkKey}
+                    className="flex items-center space-x-2 cursor-pointer hover:bg-muted/50 p-2 rounded"
+                  >
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setNetworks([...networks, networkKey]);
+                        } else {
+                          setNetworks(networks.filter((n) => n !== networkKey));
+                        }
+                      }}
+                      className="rounded border-input"
+                    />
+                    <span className="text-sm">
+                      {networkConfig.icon} {networkConfig.displayName}
+                      {networkConfig.type === "testnet" && (
+                        <span className="text-muted-foreground ml-1">(Testnet)</span>
+                      )}
+                    </span>
+                  </label>
+                );
+              })}
+            </div>
           </div>
 
           <Separator />
