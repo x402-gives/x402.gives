@@ -2,9 +2,14 @@ import { useEffect, useState } from "react";
 import { useLocation, useParams } from "react-router-dom";
 import type { Address } from "viem";
 import { isAddress } from "viem";
-import { fetchGitHubConfig, fetchGitHubUserInfo, type GitHubUserInfo } from "../lib/githubConfig";
+import {
+  convertGitHubUserInfo,
+  fetchGitHubConfig,
+  fetchGitHubRepoInfo,
+  fetchGitHubUserInfo,
+} from "../lib/githubConfig";
 import { createQuickLinkConfig, validateConfig } from "../lib/quicklinkConfig";
-import type { RecipientPageData, GitHubUser, GitHubRepo } from "../types/donation-config";
+import type { RecipientPageData, GitHubRepo } from "../types/donation-config";
 import {
   buildGitHubDataWithFile,
   buildGitHubDataWithoutFile,
@@ -16,37 +21,7 @@ export interface Recipient {
   bips: number; // 0-10000 (basis points)
 }
 
-/**
- * Fetch GitHub repository information
- */
-async function fetchGitHubRepoInfo(owner: string, repo: string): Promise<GitHubRepo | undefined> {
-  try {
-    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
-    if (!response.ok) {
-      return undefined;
-    }
-    return await response.json();
-  } catch (error) {
-    console.error("Failed to fetch GitHub repo info:", error);
-    return undefined;
-  }
-}
-
 // RecipientConfig interface has been replaced by RecipientPageData
-
-// Helper function: convert GitHubUserInfo to GitHubUser
-function convertToGitHubUser(userInfo: GitHubUserInfo): GitHubUser {
-  return {
-    login: userInfo.login,
-    name: userInfo.name ?? null,
-    avatar_url: userInfo.avatar_url,
-    bio: userInfo.bio ?? null,
-    html_url: `https://github.com/${userInfo.login}`,
-    blog: null,
-    twitter_username: null,
-    email: null,
-  } as GitHubUser;
-}
 
 export function useRecipient(): RecipientPageData | null {
   const location = useLocation();
@@ -78,7 +53,7 @@ export function useRecipient(): RecipientPageData | null {
               githubRepo = await fetchGitHubRepoInfo(params.username, params.repo);
             }
 
-            const githubUser = convertToGitHubUser(userInfo);
+            const githubUser = convertGitHubUserInfo(userInfo);
             const pageData = buildGitHubDataWithFile(x402Config, githubUser, githubRepo);
             setConfig(pageData);
           } else {
@@ -92,7 +67,7 @@ export function useRecipient(): RecipientPageData | null {
                 githubRepo = await fetchGitHubRepoInfo(params.username, params.repo);
               }
 
-              const githubUser = convertToGitHubUser(userInfo);
+              const githubUser = convertGitHubUserInfo(userInfo);
               const pageData = buildGitHubDataWithoutFile(githubUser, githubRepo);
               setConfig(pageData);
             } else {

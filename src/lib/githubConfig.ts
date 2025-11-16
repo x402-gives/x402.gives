@@ -1,5 +1,5 @@
 import type { Address } from "viem";
-import type { X402DonationConfig } from "../types/donation-config";
+import type { GitHubRepo, GitHubUser, X402DonationConfig } from "../types/donation-config";
 import { X402_CONFIG_PATH } from "../constants/config";
 
 export interface GitHubUserInfo {
@@ -15,6 +15,41 @@ export interface ResolvedGitHubConfig {
   userInfo: GitHubUserInfo;
   source: string; // e.g., "github.com/jolestar/.x402/donation.json"
   verified: boolean;
+}
+
+/**
+ * Fetch GitHub repository information
+ */
+export async function fetchGitHubRepoInfo(
+  owner: string,
+  repo: string,
+): Promise<GitHubRepo | undefined> {
+  try {
+    const response = await fetch(`https://api.github.com/repos/${owner}/${repo}`);
+    if (!response.ok) {
+      return undefined;
+    }
+    return (await response.json()) as GitHubRepo;
+  } catch (error) {
+    console.error("Failed to fetch GitHub repo info:", error);
+    return undefined;
+  }
+}
+
+/**
+ * Convert GitHub user info response into GitHubUser shape
+ */
+export function convertGitHubUserInfo(userInfo: GitHubUserInfo): GitHubUser {
+  return {
+    login: userInfo.login,
+    name: userInfo.name ?? userInfo.login,
+    avatar_url: userInfo.avatar_url,
+    bio: userInfo.bio,
+    html_url: `https://github.com/${userInfo.login}`,
+    blog: null,
+    twitter_username: null,
+    email: null,
+  };
 }
 
 /**
