@@ -15,12 +15,14 @@
       fill: #10B981;
     }
     .icon-x {
+      /* keep defined but make it very subtle; main control via inline attrs */
       stroke: #ECFDF5;
-      stroke-width: 1.0;
+      stroke-width: 0.8;
       stroke-linecap: round;
     }
     .wordmark {
-      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      /* simplified font stack to avoid ImageMagick SVG parsing issues */
+      font-family: -apple-system, system-ui, BlinkMacSystemFont, sans-serif;
       font-size: 34px;
       font-weight: 700;
       fill: #111827;
@@ -45,8 +47,23 @@
          C28 23, 23 26, 20 29
          Z"
     />
-    <path class="icon-x" d="M17.4 18.4 L22.6 23.6" />
-    <path class="icon-x" d="M22.6 18.4 L17.4 23.6" />
+    <!-- extremely subtle "x" highlight near the center of the heart -->
+    <path
+      class="icon-x"
+      d="M18.5 19 L21.5 22"
+      stroke="#ECFDF5"
+      stroke-width="0.8"
+      stroke-opacity="0.5"
+      stroke-linecap="round"
+    />
+    <path
+      class="icon-x"
+      d="M21.5 19 L18.5 22"
+      stroke="#ECFDF5"
+      stroke-width="0.8"
+      stroke-opacity="0.5"
+      stroke-linecap="round"
+    />
   </g>
 
   <!-- bottom: brand text, centered -->
