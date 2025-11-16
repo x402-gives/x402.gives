@@ -11,6 +11,8 @@ import { BuilderOutputTabs } from "./BuilderOutputTabs";
 import type { X402DonationConfig } from "../types/donation-config";
 import { encodeConfigToHash, decodeConfigFromHash } from "../lib/quicklinkConfig";
 import { isAddress, type Address } from "viem";
+import { NETWORKS, getAvailableNetworks } from "../config/networks";
+import { normalizeNetworkConfig } from "../lib/networkUtils";
 
 interface BuilderPanelQuickLinkProps {
   address: string;
@@ -31,7 +33,7 @@ export function BuilderPanelQuickLink({ address, onPreview }: BuilderPanelQuickL
   const [creatorAvatar, setCreatorAvatar] = useState("");
   const [links, setLinks] = useState<Array<{ url: string; label: string }>>([]);
   const [defaultAmount, setDefaultAmount] = useState("");
-  const [network, setNetwork] = useState("base-sepolia");
+  const [networks, setNetworks] = useState<string[]>([]);
 
   // Load configuration from URL hash on mount
   useEffect(() => {
@@ -47,7 +49,10 @@ export function BuilderPanelQuickLink({ address, onPreview }: BuilderPanelQuickL
         if (config.title) setTitle(config.title);
         if (config.description) setDescription(config.description);
         if (config.defaultAmount) setDefaultAmount(config.defaultAmount);
-        if (config.network) setNetwork(config.network);
+        if (config.network) {
+          const normalized = normalizeNetworkConfig(config.network);
+          setNetworks(normalized);
+        }
 
         // Fill creator info
         if (config.creator) {
@@ -125,7 +130,7 @@ export function BuilderPanelQuickLink({ address, onPreview }: BuilderPanelQuickL
     const config: X402DonationConfig = {
       payTo: payTo ? (payTo as Address) : undefined,
       defaultAmount: defaultAmount || undefined,
-      network,
+      network: networks.length > 0 ? (networks.length === 1 ? networks[0] : networks) : undefined,
     };
 
     // Add title (replaces name)
@@ -395,18 +400,42 @@ export function BuilderPanelQuickLink({ address, onPreview }: BuilderPanelQuickL
 
       {/* Network */}
       <div className="space-y-2">
-        <Label htmlFor="network">Network</Label>
-        <select
-          id="network"
-          value={network}
-          onChange={(e) => setNetwork(e.target.value)}
-          className="w-full px-3 py-2 border border-input rounded-md bg-background"
-        >
-          <option value="base-sepolia">Base Sepolia (Testnet)</option>
-          <option value="base-mainnet">Base Mainnet</option>
-          <option value="x-layer-mainnet">X Layer Mainnet</option>
-          <option value="x-layer-testnet">X Layer Testnet</option>
-        </select>
+        <Label htmlFor="network">Supported Networks (Optional)</Label>
+        <p className="text-xs text-muted-foreground mb-2">
+          Select networks where donations are accepted. Leave empty to allow all networks. For
+          contract addresses, it's recommended to specify networks to prevent cross-network errors.
+        </p>
+        <div className="space-y-2 border border-input rounded-md p-3 bg-background">
+          {getAvailableNetworks().map((networkKey) => {
+            const networkConfig = NETWORKS[networkKey];
+            const isChecked = networks.includes(networkKey);
+            return (
+              <label
+                key={networkKey}
+                className="flex items-center space-x-2 cursor-pointer hover:bg-muted/50 p-2 rounded"
+              >
+                <input
+                  type="checkbox"
+                  checked={isChecked}
+                  onChange={(e) => {
+                    if (e.target.checked) {
+                      setNetworks([...networks, networkKey]);
+                    } else {
+                      setNetworks(networks.filter((n) => n !== networkKey));
+                    }
+                  }}
+                  className="rounded border-input"
+                />
+                <span className="text-sm">
+                  {networkConfig.icon} {networkConfig.displayName}
+                  {networkConfig.type === "testnet" && (
+                    <span className="text-muted-foreground ml-1">(Testnet)</span>
+                  )}
+                </span>
+              </label>
+            );
+          })}
+        </div>
       </div>
 
       <Separator />

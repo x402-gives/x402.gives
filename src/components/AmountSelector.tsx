@@ -33,7 +33,9 @@ export function AmountSelector({ defaultAmount, onAmountChange }: AmountSelector
 
   const initialAmount = normalizeAmount(defaultAmount || "5");
   const [customAmount, setCustomAmount] = useState(initialAmount);
-  const [selectedPreset, setSelectedPreset] = useState<string | null>(findPresetMatch(initialAmount));
+  const [selectedPreset, setSelectedPreset] = useState<string | null>(
+    findPresetMatch(initialAmount),
+  );
 
   // Update amount when defaultAmount changes
   useEffect(() => {

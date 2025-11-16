@@ -17,7 +17,7 @@
     }
   ],
   "defaultAmount": "20",
-  "network": "base-mainnet",
+  "network": "base",
   "links": [
     {
       "url": "https://react.dev",

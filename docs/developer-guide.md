@@ -65,10 +65,36 @@ interface X402DonationConfig {
   description?: string;
   creator?: { handle: string; avatar?: string; };
   defaultAmount?: string;           // e.g. "5" or "$5"
-  network?: string;                 // e.g. "base-mainnet", "base-sepolia"
+  network?: string | string[];      // Supported networks (optional)
   links?: { url: string; label?: string; }[];
 }
 ```
+
+### Network Field
+
+The `network` field specifies which blockchain networks accept donations for this recipient:
+
+- **If specified**: Only the listed network(s) will be available for donations. Use this for contract addresses that differ across networks to prevent cross-network errors.
+- **If omitted**: All supported networks will be available (suitable for EOA addresses that are the same across networks).
+
+**Format:**
+- Single network: `"base"` or `["base"]`
+- Multiple networks: `["base", "base-sepolia"]`
+- All networks: `undefined` or omit the field
+
+**Network identifiers** must match the network names from `@x402x/core`:
+- `"base"` - Base Mainnet
+- `"base-sepolia"` - Base Sepolia (Testnet)
+- `"x-layer"` - X Layer Mainnet
+- `"x-layer-testnet"` - X Layer Testnet
+
+**Environment behavior:**
+- In **development**: All networks (including testnets) are available
+- In **production**: Testnet networks are automatically filtered out, only mainnet networks are shown to users
+
+**Best practices:**
+- For **contract addresses**: Always specify `network` to prevent users from accidentally donating to the wrong network
+- For **EOA addresses**: You can omit `network` to allow donations on all networks
 
 ### Validation rules
 
@@ -77,8 +103,29 @@ interface X402DonationConfig {
 3. Additional recipients must use checksum-compatible Ethereum addresses.
 4. QuickLink hash payloads are rehydrated via `decodeConfigFromHash`; malformed payloads are ignored and default to `{ payTo: <route address> }`.
 
-### Example
+### Examples
 
+**Single network (contract address):**
+```json
+{
+  "payTo": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "title": "Support x402.gives",
+  "description": "Transparent x402-powered donations for our community tools.",
+  "defaultAmount": "5",
+  "network": "base"
+}
+```
+
+**Multiple networks:**
+```json
+{
+  "payTo": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
+  "title": "Support x402.gives",
+  "network": ["base", "x-layer"]
+}
+```
+
+**All networks (EOA address, network field omitted):**
 ```json
 {
   "payTo": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb",
@@ -89,7 +136,6 @@ interface X402DonationConfig {
     "avatar": "https://avatars.githubusercontent.com/u/000000?v=4"
   },
   "defaultAmount": "5",
-  "network": "base-mainnet",
   "recipients": [
     { "address": "0x742d35Cc6634C0532925a3b844Bc9e7595f0bEb", "bips": 7000 },
     { "address": "0x036CbD53842c5426634e7929541eC2318f3dCF7e", "bips": 3000 }
