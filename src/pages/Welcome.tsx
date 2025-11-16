@@ -1,7 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  Gift,
   Heart,
   Share2,
   Shield,
@@ -83,10 +82,11 @@ export function Welcome() {
             <div className="space-y-8">
               <div>
                 <div className="flex items-center gap-3 mb-6">
-                  <Gift className="h-12 w-12 text-blue-600" />
-                  <Badge variant="secondary" className="text-lg px-3 py-1">
-                    x402.gives
-                  </Badge>
+                  <img
+                    src="/logos/x402.gives-logo.svg"
+                    alt="x402.gives logo"
+                    className="h-12 w-auto drop-shadow-sm"
+                  />
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
                   Support Open Source Projects
