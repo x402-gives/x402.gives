@@ -10,7 +10,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { type PropsWithChildren, useMemo } from "react";
 import { WagmiProvider } from "wagmi";
 import { defineChain } from "viem";
-import { getNetworkConfig } from "@x402x/core";
+import { getNetworkConfig } from "@x402x/extensions";
 
 // Fix xLayerTestnet chainId: AppKit has incorrect chainId (195), correct is 1952
 // Use x402x/core as source of truth for network configuration
@@ -25,7 +25,7 @@ const appKitProjectId = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID as string 
 if (!appKitProjectId) {
   throw new Error(
     "Missing VITE_WALLETCONNECT_PROJECT_ID. Please set your WalletConnect project ID in .env file.\n" +
-      "Get your project ID from https://cloud.reown.com/",
+    "Get your project ID from https://cloud.reown.com/",
   );
 }
 

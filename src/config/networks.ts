@@ -12,13 +12,20 @@
  * See also: src/constants/networks.ts for facilitator/payment-related network configurations
  */
 
-import { networks as x402Networks } from "@x402x/core";
-import type { NetworkConfig as X402NetworkConfig } from "@x402x/core";
+import { networks as x402Networks } from "@x402x/extensions";
+import type { NetworkConfig as X402NetworkConfig } from "@x402x/extensions";
 
 /**
- * Supported network identifiers (matching x402x/core)
+ * Supported network identifiers (v1 aliases)
  */
-export type Network = keyof typeof x402Networks;
+export type Network =
+  | "base-sepolia"
+  | "x-layer-testnet"
+  | "base"
+  | "x-layer"
+  | "skale-base-sepolia"
+  | "bsc-testnet"
+  | "bsc";
 
 /**
  * UI-specific network configuration
@@ -33,7 +40,7 @@ export interface NetworkUIConfig {
 /**
  * Complete network configuration combining x402x data with UI metadata
  */
-export interface NetworkConfig extends X402NetworkConfig, NetworkUIConfig {}
+export interface NetworkConfig extends X402NetworkConfig, NetworkUIConfig { }
 
 /**
  * UI configuration for supported networks
@@ -63,30 +70,60 @@ export const NETWORK_UI_CONFIG: Record<Network, NetworkUIConfig> = {
     faucetUrl: "https://www.okx.com/xlayer/bridge",
     blockExplorerUrl: "https://www.okx.com/web3/explorer/xlayer",
   },
+  "skale-base-sepolia": {
+    icon: "🎨",
+    displayName: "SKALE Base Sepolia",
+    faucetUrl: "https://faucet.skale.network/",
+    blockExplorerUrl: "https://base-sepolia-testnet-explorer.skalenodes.com",
+  },
+  "bsc-testnet": {
+    icon: "🟡",
+    displayName: "BSC Testnet",
+    faucetUrl: "https://testnet.bnbchain.org/faucet-smart",
+    blockExplorerUrl: "https://testnet.bscscan.com",
+  },
+  bsc: {
+    icon: "🟡",
+    displayName: "BSC Mainnet",
+    faucetUrl: "https://www.bnbchain.org/en/bridge",
+    blockExplorerUrl: "https://bscscan.com",
+  },
 };
 
 /**
  * Complete network configurations
  * Combines x402x/core data with UI metadata
  */
-export const NETWORKS: Record<Network, NetworkConfig> = {
+export const NETWORKS: Record<string, NetworkConfig> = {
   "base-sepolia": {
-    ...x402Networks["base-sepolia"],
+    ...x402Networks["eip155:84532"],
     ...NETWORK_UI_CONFIG["base-sepolia"],
   },
   "x-layer-testnet": {
-    ...x402Networks["x-layer-testnet"],
+    ...x402Networks["eip155:1952"],
     ...NETWORK_UI_CONFIG["x-layer-testnet"],
   },
   base: {
-    ...x402Networks.base,
+    ...x402Networks["eip155:8453"],
     ...NETWORK_UI_CONFIG.base,
   },
   "x-layer": {
-    ...x402Networks["x-layer"],
+    ...x402Networks["eip155:196"],
     ...NETWORK_UI_CONFIG["x-layer"],
   },
-};
+  "skale-base-sepolia": {
+    ...x402Networks["eip155:324705682"],
+    ...NETWORK_UI_CONFIG["skale-base-sepolia"],
+  },
+  "bsc-testnet": {
+    ...x402Networks["eip155:97"],
+    ...NETWORK_UI_CONFIG["bsc-testnet"],
+  },
+  bsc: {
+    ...x402Networks["eip155:56"],
+    ...NETWORK_UI_CONFIG.bsc,
+  },
+} as Record<Network, NetworkConfig>;
 
 /**
  * Get network config by chain ID

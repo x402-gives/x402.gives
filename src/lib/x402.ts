@@ -1,10 +1,16 @@
 import type { Address } from "viem";
 
+import {
+  X402Client,
+  parseDefaultAssetAmount as parseAmount,
+  formatDefaultAssetAmount as formatAmount,
+} from "@x402x/client";
+import { networks } from "@x402x/extensions";
+
 export const FACILITATOR_URL = "https://facilitator.x402x.dev";
 
 // Create X402Client instance
-export async function createX402Client(wallet: any, network: string): Promise<any> {
-  const { X402Client } = await import("@x402x/client");
+export function createX402Client(wallet: any, network: string): X402Client {
   return new X402Client({
     wallet,
     network,
@@ -14,8 +20,9 @@ export async function createX402Client(wallet: any, network: string): Promise<an
   });
 }
 
-// Re-export amount parsing functions from @x402x/core
-export { parseDefaultAssetAmount, formatDefaultAssetAmount } from "@x402x/core";
+// Re-export amount parsing functions
+export const parseDefaultAssetAmount = parseAmount;
+export const formatDefaultAssetAmount = formatAmount;
 
 // Convert percentage to basis points (bips)
 export function percentageToBips(percentage: number): number {
@@ -29,9 +36,7 @@ export function bipsToPercentage(bips: number): number {
 
 // Get TransferHook address for network
 export function getTransferHookAddress(network: string): Address {
-  // Import synchronously since networks is exported as a value
-  const { networks } = require("@x402x/core");
-  const networkConfig = networks[network];
+  const networkConfig = networks[network as keyof typeof networks];
   if (!networkConfig) {
     throw new Error(`Unsupported network: ${network}`);
   }
@@ -41,7 +46,7 @@ export function getTransferHookAddress(network: string): Address {
 // Encode recipients for TransferHook
 export function encodeRecipientsForHook(
   recipients: Array<{ address: Address; bips: number }>,
-): string {
+): `0x${string}` {
   // Filter out recipients with 0 bips (they don't need to be in hookData)
   const activeRecipients = recipients.filter((r) => r.bips > 0);
 

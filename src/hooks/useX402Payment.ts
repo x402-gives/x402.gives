@@ -75,7 +75,7 @@ export function useX402Payment(options: UseX402PaymentOptions = {}) {
 
         // Create X402Client instance
         console.log("🔧 Creating X402Client...");
-        const client = await createX402Client(connectorClient, network);
+        const client = createX402Client(connectorClient, network);
         console.log("✅ X402Client created");
 
         // Encode recipients for TransferHook
