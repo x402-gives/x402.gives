@@ -12,7 +12,7 @@
  * See also: src/config/networks.ts for UI-specific network configurations (icons, display names)
  */
 
-import { getNetworkConfig, getSupportedNetworks } from "@x402x/core";
+import { getNetworkConfig, getSupportedNetworkAliases } from "@x402x/extensions";
 
 export type PaymentToken = {
   symbol: string;
@@ -38,7 +38,7 @@ export type SupportedNetwork = {
 // Today each network supports a single USDC token.
 export const SUPPORTED_PAYMENT_TOKENS: Record<string, PaymentToken[]> = (() => {
   const result: Record<string, PaymentToken[]> = {};
-  for (const n of getSupportedNetworks()) {
+  for (const n of getSupportedNetworkAliases()) {
     const cfg = getNetworkConfig(n);
     const addressBase = cfg.addressExplorerBaseUrl;
     const usdcAddress = cfg.defaultAsset.address; // Use defaultAsset from @x402x/core
@@ -58,7 +58,7 @@ export const SUPPORTED_PAYMENT_TOKENS: Record<string, PaymentToken[]> = (() => {
 // Build supported networks list from SDK + meta config
 export const SUPPORTED_NETWORKS: SupportedNetwork[] = (() => {
   const list: SupportedNetwork[] = [];
-  for (const n of getSupportedNetworks()) {
+  for (const n of getSupportedNetworkAliases()) {
     const cfg = getNetworkConfig(n);
     list.push({
       name: cfg.name ?? n,

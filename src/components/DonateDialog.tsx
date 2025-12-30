@@ -203,7 +203,7 @@ export function DonateDialog({
     try {
       console.log("[DonateDialog] Loading fee for network:", network);
 
-      const client = await createX402Client(connectorClient, network);
+      const client = createX402Client(connectorClient, network);
       const networkConfig = NETWORKS[network];
       const hookData = encodeRecipientsForHook(recipients);
       const hookAddress = networkConfig.hooks.transfer as `0x${string}`;
@@ -230,7 +230,7 @@ export function DonateDialog({
     setStep("processing");
 
     try {
-      const client = await createX402Client(connectorClient, selectedNetwork);
+      const client = createX402Client(connectorClient, selectedNetwork);
       const networkConfig = NETWORKS[selectedNetwork];
       const hookData = encodeRecipientsForHook(recipients);
       const hookAddress = networkConfig.hooks.transfer as `0x${string}`;
