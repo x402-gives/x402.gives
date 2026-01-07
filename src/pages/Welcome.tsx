@@ -5,7 +5,6 @@ import {
   Share2,
   Shield,
   Zap,
-  Link2,
   Github,
   ArrowRight,
   CheckCircle,
@@ -20,7 +19,6 @@ import { Input } from "../components/ui/input";
 import { Label } from "../components/ui/label";
 import { Card, CardContent, CardHeader, CardTitle } from "../components/ui/card";
 import { Badge } from "../components/ui/badge";
-import { Separator } from "../components/ui/separator";
 import AppFooter from "../components/app-footer";
 
 const DEMO_OWNER = "x402-gives";
@@ -34,18 +32,11 @@ export function Welcome() {
   const navigate = useNavigate();
   const [githubOwner, setGithubOwner] = useState("");
   const [githubRepo, setGithubRepo] = useState("");
-  const [walletAddress, setWalletAddress] = useState("");
 
   const handleGitHubSubmit = () => {
     if (githubOwner.trim()) {
       const repoPath = githubRepo.trim() ? `/${githubRepo.trim()}` : "";
       navigate(`/builder/github.com/${githubOwner.trim()}${repoPath}`);
-    }
-  };
-
-  const handleWalletSubmit = () => {
-    if (walletAddress.trim()) {
-      navigate(`/builder/${walletAddress.trim()}`);
     }
   };
 
@@ -89,11 +80,11 @@ export function Welcome() {
                   />
                 </div>
                 <h1 className="text-4xl lg:text-5xl font-bold text-gray-900 dark:text-white mb-6">
-                  Support Open Source Projects
+                  Trustless Donations for Open Source
                 </h1>
                 <p className="text-xl text-gray-600 dark:text-gray-300 mb-8">
-                  An open source donation platform based on the x402 protocol, providing transparent
-                  and verifiable donation solutions for creators
+                  A verified donation platform based on the x402 protocol, providing transparent
+                  and trustless donation solutions for open source projects
                 </p>
                 <p className="text-lg text-gray-500 dark:text-gray-400 italic">
                   "Everyone can give, nothing is held."
@@ -141,18 +132,34 @@ export function Welcome() {
             </div>
 
             {/* Right Side - Quick Start CTA */}
-            <div className="space-y-6">
-              <Card className="shadow-xl border-2">
+            <div className="flex items-center">
+              <Card className="shadow-xl border-2 w-full">
                 <CardHeader className="text-center pb-4">
                   <CardTitle className="text-2xl flex items-center justify-center gap-2">
                     <Zap className="h-6 w-6 text-yellow-500" />
                     Create Donation Link Now
                   </CardTitle>
                   <p className="text-muted-foreground">
-                    Choose your project type and start setting up
+                    Set up verified donations for your GitHub project
                   </p>
                 </CardHeader>
                 <CardContent className="space-y-6">
+                  {/* Why GitHub Verification */}
+                  <div className="space-y-2 text-sm">
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <span>Verified through your repository</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <span>Get a trust badge for your README</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <CheckCircle className="h-4 w-4 text-green-600 flex-shrink-0" />
+                      <span>Configuration synced via .x402/donation.json</span>
+                    </div>
+                  </div>
+
                   {/* GitHub Verified */}
                   <div className="space-y-4">
                     <div className="flex items-center gap-2">
@@ -200,53 +207,9 @@ export function Welcome() {
                     </Button>
                   </div>
 
-                  <div className="flex items-center gap-4">
-                    <Separator className="flex-1" />
-                    <span className="text-muted-foreground text-sm">or</span>
-                    <Separator className="flex-1" />
-                  </div>
 
-                  {/* Quick Link */}
-                  <div className="space-y-4">
-                    <div className="flex items-center gap-2">
-                      <Link2 className="h-5 w-5 text-gray-700 dark:text-gray-300" />
-                      <Label className="text-base font-medium">Wallet Address</Label>
-                    </div>
-                    <div>
-                      <Label htmlFor="wallet-address" className="text-sm">
-                        Wallet Address
-                      </Label>
-                      <Input
-                        id="wallet-address"
-                        placeholder="0x1234...5678"
-                        value={walletAddress}
-                        onChange={(e) => setWalletAddress(e.target.value)}
-                        className="mt-1"
-                      />
-                    </div>
-                    <Button
-                      onClick={handleWalletSubmit}
-                      disabled={!walletAddress.trim()}
-                      variant="outline"
-                      className="w-full"
-                      size="lg"
-                    >
-                      <Link2 className="h-4 w-4 mr-2" />
-                      Continue
-                      <ArrowRight className="h-4 w-4 ml-2" />
-                    </Button>
-                  </div>
                 </CardContent>
               </Card>
-
-              <div className="text-center">
-                <p className="text-sm text-muted-foreground">
-                  Already have a donation link?{" "}
-                  <a href="#demo" className="text-blue-600 hover:underline">
-                    View Demo
-                  </a>
-                </p>
-              </div>
             </div>
           </div>
 
@@ -281,9 +244,9 @@ export function Welcome() {
                   <div className="w-12 h-12 bg-green-100 dark:bg-green-900 rounded-full flex items-center justify-center mx-auto mb-3">
                     <Github className="h-6 w-6 text-green-600 dark:text-green-400" />
                   </div>
-                  <h3 className="font-semibold mb-2">1. Enter Information</h3>
+                  <h3 className="font-semibold mb-2">1. Enter GitHub Info</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
-                    Enter your GitHub username or wallet address
+                    Enter your GitHub username and repository
                   </p>
                 </div>
                 <div className="text-center">
@@ -297,7 +260,7 @@ export function Welcome() {
                 </div>
                 <div className="text-center">
                   <div className="w-12 h-12 bg-purple-100 dark:bg-purple-900 rounded-full flex items-center justify-center mx-auto mb-3">
-                    <Link2 className="h-6 w-6 text-purple-600 dark:text-purple-400" />
+                    <Zap className="h-6 w-6 text-purple-600 dark:text-purple-400" />
                   </div>
                   <h3 className="font-semibold mb-2">3. Copy Link</h3>
                   <p className="text-sm text-gray-600 dark:text-gray-400">
